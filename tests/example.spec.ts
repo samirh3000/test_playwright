@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { getCaseById } from '../utils/testData';
 
 test('has title', async ({ page }) => {
   await page.goto('https://playwright.dev/');
@@ -38,3 +39,14 @@ test('TC-01: Login con contraseña incorrecta', async ({ page }) => {
   
 });
 
+test("2056 - Test automatizado - Caso 2056", async ({ page }) => {
+  const tc = await getCaseById("2056");
+  if (!tc?.Active) test.skip();
+
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await page.goto("https://www.facebook.com/");
+  await page.getByTestId("royal-email").fill(tc.TestData.user);
+  await page.getByTestId("royal-pass").fill(tc.TestData.password);
+  await page.getByTestId("royal-login-button").click();
+  await expect(page.getByText(tc.TestData.messageError)).toBeVisible();
+});
